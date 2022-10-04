@@ -9,8 +9,10 @@ const mongoose = require('mongoose');
 
 // Set up Express App
 const app = express();
+// Middleware
 app.use(cors());
-
+// If req.body is undefined, make sure to use express.json() middleware!
+app.use(express.json());
 // Mongoose 
 mongoose.connect(process.env.DB_URL); // DB url in our .env goes here
 const db = mongoose.connection;
@@ -42,3 +44,45 @@ async function getBooks(req, res) {
         res.status(500).send(error);
     }
 }
+
+// POST Endpoint, will trigger a Create action on our db
+app.post('/books', postBooks);
+
+async function postBooks(req, res, next) {
+    // double check what's added to database
+    console.log(req.body);
+    try {
+        // "Books" is the name of the model, .create() is the mongoose method, req.body is the cat information
+        const newBooks = await Books.create(req.body);
+        res.status(201).send(newBooks);
+    } catch (error) {
+        next(error);
+    }
+}
+
+// DELETE Endpoint
+
+app.delete('/books/:id', deleteBook);
+
+async function deleteBook(req, res, next) {
+    const id = req.params.id;
+    console.log(id);
+    try {
+        await Books.findByIdAndDelete(id);
+        res.status(204).send('Successfully Deleted');
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
+app.get('*', (req, res) => {
+    res.status(404).send('Not available');
+});
+
+// put this error handling at the bottom
+// It's the last app.use()!
+app.use((error, req, res) => {
+    res.status(500).send(error.message);
+}) 

@@ -46,15 +46,15 @@ async function getBooks(req, res) {
 }
 
 // POST Endpoint, will trigger a Create action on our db
-app.post('/books', postBooks);
+app.post('/books', postBook);
 
-async function postBooks(req, res, next) {
+async function postBook(req, res, next) {
     // double check what's added to database
     console.log(req.body);
     try {
         // "Books" is the name of the model, .create() is the mongoose method, req.body is the cat information
-        const newBooks = await Books.create(req.body);
-        res.status(201).send(newBooks);
+        const newBook = await Books.create(req.body);
+        res.status(201).send(newBook);
     } catch (error) {
         next(error);
     }

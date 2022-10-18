@@ -48,16 +48,13 @@ async function getBooks(req, res) {
 // POST Endpoint, will trigger a Create action on our db
 app.post('/books', postBook);
 
-async function postBook(req, res, next) {
-    // double check what's added to database
-    console.log(req.body);
-    try {
-        // "Books" is the name of the model, .create() is the mongoose method, req.body is the cat information
-        const newBook = await Books.create(req.body);
-        res.status(201).send(newBook);
-    } catch (error) {
-        next(error);
-    }
+async function postBook(request, response, next){
+  try{
+    const updateBook = await Books.create(request.body);
+    response.status(201).send(updateBook);
+  } catch (error) {
+    next(error);
+  }
 }
 
 // DELETE Endpoint
@@ -83,7 +80,7 @@ async function putBooks(request, response, next){
   let id = request.params.id;
   try{
     let data = request.body;
-    const updateBook = await Book.findByIdAndUpdate(id, data, {new: true, overwrite: true});
+    const updateBook = await Books.findByIdAndUpdate(id, data, {new: true, overwrite: true});
     response.status(201).send(updateBook);
   } catch (error) {
     next(error);

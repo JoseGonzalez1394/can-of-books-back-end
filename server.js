@@ -77,30 +77,17 @@ async function deleteBook(req, res, next) {
 
 // PUT Endpoint
 
-app.put('/books/:id', putBook);
+app.put('/books/:id', putBooks);
 
-async function putBook(req, res, next) {
-    const id = req.params.id;
-    console.log(id);
-    try {
-        const data = req.body;
-
-        // .findByIdAndUpdate method - takes 3 arguments:
-        // 1. id of the thing (document) to update
-        // 2. updated data object
-        // 3. mongoose options object - { new: true, overwrite: true}
-
-        const options = {
-            new: true,
-            overwrite: true,
-        };
-
-        // Represents the updated document! Here, it is the updated cat
-        const updatedBook = await Books.findByIdAndUpdate(id, data, options);
-        res.status(201).send(updatedBook);
-    } catch (error) {
-        next(error);        
-    }    
+async function putBooks(request, response, next){
+  let id = request.params.id;
+  try{
+    let data = request.body;
+    const updateBook = await Book.findByIdAndUpdate(id, data, {new: true, overwrite: true});
+    response.status(201).send(updateBook);
+  } catch (error) {
+    next(error);
+  }
 }
 
 app.get('*', (req, res) => {

@@ -48,10 +48,10 @@ async function getBooks(req, res) {
 // POST Endpoint, will trigger a Create action on our db
 app.post('/books', postBook);
 
-async function postBook(request, response, next){
+async function postBook(req, res, next){
   try{
-    const updateBook = await Books.create(request.body);
-    response.status(201).send(updateBook);
+    const addBook = await Books.create(req.body);
+    res.status(201).send(addBook);
   } catch (error) {
     next(error);
   }
@@ -76,12 +76,12 @@ async function deleteBook(req, res, next) {
 
 app.put('/books/:id', putBooks);
 
-async function putBooks(request, response, next){
-  let id = request.params.id;
+async function putBooks(req, res, next){
   try{
-    let data = request.body;
+    let id = req.params.id;
+    let data = req.body;
     const updateBook = await Books.findByIdAndUpdate(id, data, {new: true, overwrite: true});
-    response.status(201).send(updateBook);
+    res.status(201).send(updateBook);
   } catch (error) {
     next(error);
   }
@@ -93,6 +93,6 @@ app.get('*', (req, res) => {
 
 // put this error handling at the bottom
 // It's the last app.use()!
-app.use((error, req, res) => {
+app.use((error, req, res, next) => {
     res.status(500).send(error.message);
 }) 
